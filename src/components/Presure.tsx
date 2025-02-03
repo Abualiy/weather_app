@@ -3,16 +3,16 @@ import {
     Card,
     CardContent,
 } from "@/components/ui/card"
-import { WiHumidity } from "react-icons/wi"
+import { TiWaves } from "react-icons/ti"
 
-export default function Pressure() {
+export default function Pressure({pressure} : {pressure: number}) {
     return (
         <Card className="w-full bg-base-200 border-none text-white">
             <CardContent className="p-2 flex flex-col  gap-2">
                 <h1 className="text-slate-600 font-bold">Pressure</h1>
                 <div className="text-xl">
-                    <WiHumidity className="text-2xl"/>
-                    1025hPa
+                    <TiWaves className="text-2xl"/>
+                    {pressure}hPa
                 </div>
             </CardContent>
         </Card>

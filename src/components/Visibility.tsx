@@ -3,16 +3,16 @@ import {
     Card,
     CardContent,
 } from "@/components/ui/card"
-import { WiHumidity } from "react-icons/wi"
+import { LiaEyeSolid } from "react-icons/lia"
 
-export default function Visibility() {
+export default function Visibility({visibility} : {visibility: number}) {
     return (
         <Card className="w-full bg-base-200 border-none text-white">
             <CardContent className="p-2 flex flex-col gap-2">
                 <h1 className="text-slate-600 font-bold">Visibility</h1>
                 <div className="text-xl">
-                    <WiHumidity className="text-2xl"/>
-                    10km
+                    <LiaEyeSolid className="text-2xl"/>
+                    {visibility}km
                 </div>
             </CardContent>
         </Card>

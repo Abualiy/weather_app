@@ -1,23 +1,30 @@
 import * as React from "react"
 
 import Image from "next/image"
+import { formatOnlyMonth } from "@/lib/dateFormattingHelper"
 
 export default function FourDayForecast(
     {
-        count
+        temp,
+        icon,
+        date,
     }: {
-        count: number
+        temp: number
+        icon: string
+        date: number
     }) {
+
+        console.log(icon)
     return (
         <div className="w-full flex justify-between border-b-2 border-base-200 py-2 text-white">
             <div>
-                <p>14.5'c</p>
+                <p>{temp}°C</p>
             </div>
             <div>
-                <Image src="/weather_icons/01n.png" width={20} height={20} alt="weather" />
+                <Image src={`/weather_icons/${icon}.png`} width={20} height={20} alt="weather" />
             </div>
             <div>
-                <p>Mar {10 + count}</p>
+                <p>{formatOnlyMonth(date)}</p>
             </div>
         </div >
     )

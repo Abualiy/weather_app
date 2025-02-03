@@ -59,6 +59,7 @@ export default {
 			},
 			backgroundImage: {
 				'night-bg': "linear-gradient(to right bottom, rgba(44, 51, 42, 0.5), rgba(11, 16, 36, 0.9)), url('/image.png')",
+				'day-bg': "linear-gradient(to right bottom, rgba(44, 51, 42, 0.2), rgba(11, 16, 36, 0.3)), url('/day.png')"
 			  },
 			  
 

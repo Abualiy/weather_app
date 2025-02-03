@@ -3,7 +3,7 @@
 import { FaLocationCrosshairs } from "react-icons/fa6";
 import { TiWeatherWindyCloudy } from "react-icons/ti";
 import WeatherNow from "../components/WeatherNow";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FourDayForecast from "@/components/FourDayForecast";
 import Sun from "../components/Sun";
 import Humidity from "@/components/Humidity";
@@ -11,13 +11,54 @@ import Pressure from "@/components/Presure";
 import Visibility from "@/components/Visibility";
 import FeelsLike from "@/components/FeelsLike";
 import HourlyForecast from "@/components/HourlyForecast";
+import { useWeatherStore } from "@/lib/weatherStore";
+import { isDay } from "@/lib/isDay";
+
+
+
 
 export default function Home() {
-  const [days, setDays] = useState([1, 2, 3, 4]);
   const [hours, setHours] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [city, setCity] = useState<string>('');
+  const { weather, loading, fetchWeather } = useWeatherStore();
+
+  useEffect(() => {
+    // Fetch current location weather on mount
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        await fetchWeather(`${lat},${lon}`);
+      });
+    }
+  }, []);
+
+  const handleCurrentLocation = async () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        await fetchWeather(`${lat},${lon}`);
+      });
+    };
+  }
+
+  const handleSearch = async () => {
+    if (city.trim() !== '') {
+      await fetchWeather(city);
+    }
+  };
+
+  if (weather) {
+    console.log('dt', weather.dt)
+    console.log('sunrise', weather.sys.sunrise)
+    console.log('sunset', weather.sys.sunset)
+    console.log('isDay', weather.dt >= weather.sys.sunrise && weather.dt < weather.sys.sunset)
+  }
   return (
-    <div className="w-screen h-screen overflow-y-scroll flex flex-col items-center bg-night-bg bg-cover ">
+    <div className={`w-screen h-screen overflow-y-scroll flex flex-col items-center ${isDay() && 'bg-day-bg'} ${!isDay() && 'bg-night-bg'} bg-cover `}>
       {/* header */}
       <div className="w-11/12 m-5 flex flex-col gap-2 items-start justify-around md:flex-row  md:item-center">
         {/* logo */}
@@ -32,12 +73,16 @@ export default function Home() {
             type="search"
             placeholder="Search for city... "
             className="input input-bordered input-accent w-full"
+            onChange={handleSearch}
           />
         </div>
 
         {/* current location button */}
         <div className="self-end">
-          <button className="btn btn-accent text-xl">
+          <button
+            className="btn btn-accent text-xl"
+            onClick={handleCurrentLocation}
+          >
             <FaLocationCrosshairs />
             Current Location
           </button>
@@ -50,57 +95,72 @@ export default function Home() {
         <div className="w-2/3 h-full flex flex-col gap-3">
           {/* now div */}
           <div className="w-full">
-            <WeatherNow />
+            {
+              weather &&
+                <WeatherNow
+                  name={weather.name}
+                  temp={weather.main.temp}
+                  description={weather.weather[0].description}
+                  date={weather.dt}
+                  icon={weather.weather[0].icon}
+                />
+            }
           </div>
           {/* 4 day forecast and today highlight */}
           <div className="w-full h-auto flex gap-3">
             {/* 4 day forecast */}
             <div className="w-1/3 h-full bg-base-100 shadow-xl card card-body">
               <h1 className=" card-title text-white">4 Days Forecast</h1>
-              <div className="flex flex-col gap-2">
-                {
-                  days.map((day, index) => (
-                    <div key={index} className="w-full">
-                      <FourDayForecast count={day} />
-                    </div>
-                  ))
-                }
-              </div>
+              {weather?.forecast?.length &&
+                (<div className="flex flex-col gap-2">
+                  {
+                    weather.forecast.map((day, index) => (
+                      <div key={index} className="w-full">
+                        <FourDayForecast temp={day.main.temp} icon={day.weather[0].icon} date={day.dt} />
+                      </div>
+                    ))
+                  }
+                </div>)
+              }
             </div>
             {/* today highlight */}
-            <div className="w-2/3 h-full bg-base-100 shadow-xl card card-body">
-              <h1 className="card-title text-white">Today highlight
-              </h1>
-              {/* sun */}
-              <Sun />
-              {/* today info */}
-              <div className="flex justify-between gap-2">
-                <div className="w-1/4 ">
-                  <Humidity />
+            {weather &&
+              <div className="w-2/3 h-full bg-base-100 shadow-xl card card-body">
+                <h1 className="card-title text-white">Today highlight
+                </h1>
+                {/* sun */}
+                <Sun sunrise={weather.sys.sunrise} sunset={weather.sys.sunset}/>
+                {/* today info */}
+                <div className="flex justify-between gap-2">
+                  <div className="w-1/4 ">
+                    <Humidity humidity={weather.main.humidity}/>
+                  </div>
+                  <div className="w-1/4 ">
+                    <Pressure pressure={weather.main.pressure}/>
+                  </div>
+                  <div className="w-1/4 ">
+                    <Visibility visibility={weather.visibility}/>
+                  </div>
+                  <div className="w-1/4 ">
+                    <FeelsLike feels_like={weather.main.feels_like}/>
+                  </div>
                 </div>
-                <div className="w-1/4 ">
-                  <Pressure />
-                </div>
-                <div className="w-1/4 ">
-                  <Visibility />
-                </div>
-                <div className="w-1/4 ">
-                  <FeelsLike />
-                </div>
-              </div>
-            </div>
+              </div>}
           </div>
         </div>
         {/* left side */}
         <div className="w-1/3 h-full bg-base-100 card card-body">
           <h1 className="card-title text-white">Today at</h1>
-          <div className="w-full grid grid-cols-2 gap-2">
-            {hours.map((hour, index) => (
+          {
+            weather?.hourlyForecast?.length && 
+            <div className="w-full grid grid-cols-2 gap-2">
+            {weather.hourlyForecast.map((forecast, index) => (
               <div key={index} className="w-full card">
-                <HourlyForecast />
+                <HourlyForecast time={forecast.dt} icon={forecast.weather[0].icon} temp={forecast.main.temp}/>
               </div>
             ))}
           </div>
+          }
         </div>
       </div>
     </div>
@@ -109,52 +169,16 @@ export default function Home() {
 
 
 
+
 // 'use client'
 // import { useState } from 'react';
 // import { getWeatherByCity } from '@/lib/weather';
 // import ModeToggle from '@/components/ModeToggle';
 
-// interface WeatherData {
-//   name: string;
-//   weather: { description: string; icon: string }[];
-//   main: { temp: number; humidity: number; pressure: number; feels_like: number };
-//   wind: { speed: number };
-//   visibility: number;
-//   sys: { sunrise: number; sunset: number };
-//   dt: number;
-//   forecast?: {
-//     dt: number;
-//     main: { temp: number; feels_like: number };
-//     weather: { description: string }[];
-//   }[];
-//   hourlyForecast?: {
-//     dt: number;
-//     main: { temp: number; feels_like: number };
-//     weather: { description: string }[];
-//   }[];
-// }
+
 
 // export default function Home() {
-//   const [city, setCity] = useState<string>('');
-//   const [weather, setWeather] = useState<WeatherData | null>(null);
-//   // const { theme, setTheme }
-//   const handleSearch = async () => {
-//     const data = await getWeatherByCity(city);
-//     setWeather(data);
-//   };
-
-//   const handleCurrentLocation = async () => {
-//     if (navigator.geolocation) {
-//       navigator.geolocation.getCurrentPosition(async (position) => {
-//         const lat = position.coords.latitude;
-//         const lon = position.coords.longitude;
-//         const data = await getWeatherByCity(`${lat},${lon}`);
-//         setWeather(data);
-//       });
-//     } else {
-//       alert('Geolocation is not supported by this browser.');
-//     }
-//   };
+//  
 
 //   return (
 //     <div className="p-8">
@@ -169,13 +193,13 @@ export default function Home() {
 //           className="border rounded-lg px-4 py-2"
 //         />
 //         <button
-//           onClick={handleSearch}
+//           
 //           className="bg-blue-500 text-white px-4 py-2 rounded-lg"
 //         >
 //           Search
 //         </button>
 //         <button
-//           onClick={handleCurrentLocation}
+//          
 //           className="bg-green-500 text-white px-4 py-2 rounded-lg"
 //         >
 //           Use Current Location
