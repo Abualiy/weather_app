@@ -69,7 +69,7 @@ weather-info-app/
 - **Current Location:** Click the "Current Location" button to fetch weather data based on your GPS location.
 
 ## Screenshots
-![Weather Info App Screenshot](/weather-info-app.png)
+![Weather Info App Screenshot](/public/weather-info-app.png)
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
