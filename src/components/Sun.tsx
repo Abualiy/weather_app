@@ -17,7 +17,7 @@ export default function Sun(
   return (
     <Card className="w-full bg-base-200 text-white">
 
-      <CardContent className="text-2xl flex justify-between pt-4">
+      <CardContent className="text-sm md:text-2xl flex justify-between pt-4">
         <div >
           <div className="flex gap-2">
             <WiSunrise />

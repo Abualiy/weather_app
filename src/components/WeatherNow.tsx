@@ -30,18 +30,17 @@ console.log(icon)
 
   return (
     <Card className="w-full h-full bg-base-100 border-none">
-      <CardHeader className="text-white">
-        <h2 className="flex absolute right-4 text-3xl">{name} <IoLocationOutline /></h2>
-        <CardTitle className="text-3xl ">Now</CardTitle>
-
+      <CardHeader className="text-white  text-sm md:text-3xl">
+        <h2 className="flex absolute right-4 ">{name} <IoLocationOutline /></h2>
+        <CardTitle>Now</CardTitle>
       </CardHeader>
       <CardContent>
-        <CardDescription className="flex items-center justify-between">
+        <CardDescription className="flex flex-col-reverse md:flex-row items-start md:items-center justify-between">
           <h1 className="text-white text-6xl font-bold ">{temp}°C</h1>
           <Image src={`/weather_icons/${icon}.png`} width={100} height={100} alt="weather now"/>
         </CardDescription>
       </CardContent>
-      <CardFooter className="flex justify-between text-white">
+      <CardFooter className="flex flex-col md:flex-row items-start justify-between text-white text-sm md:text-xl">
         <p>{description}</p>
         <p>{formatDate(date)}</p>
       </CardFooter>

@@ -59,9 +59,9 @@ export default function Home() {
   }
 
   return (
-    <div className={`w-screen h-screen overflow-y-scroll flex flex-col items-center ${isDay() && 'bg-day-bg'} ${!isDay() && 'bg-night-bg'} bg-cover `}>
+    <div className={`w-screen h-screen overflow-y-auto flex flex-col items-center ${isDay() ? 'bg-day-bg' : 'bg-night-bg'} bg-cover `}>
       {/* header */}
-      <div className="w-11/12 m-5 flex flex-col gap-2 items-start justify-around md:flex-row  ld:item-center">
+      <div className="w-11/12 m-5 flex flex-col gap-2 items-start justify-around md:flex-row  md:item-center">
         {/* logo */}
         <div className="flex items-center gap-2 text-yellow-100 input input-bordered input-accent">
           <TiWeatherWindyCloudy size={'2rem'} />
@@ -97,9 +97,9 @@ export default function Home() {
         ) : (
           weather ? (
             // {/* main */}
-            <div className="w-3/4 h-screen flex gap-3 mb-8">
-              {/* left side */}
-              <div className="w-2/3 h-full flex flex-col gap-3">
+            <div className="w-[95%] md:w-3/4 h-auto flex flex-col gap-3 mb-8 lg:flex-row">
+              {/* right side */}
+              <div className="w-full lg:w-2/3 h-full flex flex-col gap-3">
                 {/* now div */}
                 <div className="w-full min-h-60 card text-xl bg-base-100 relative font-bold">
 
@@ -112,9 +112,9 @@ export default function Home() {
                   />}
                 </div>
                 {/* 4 day forecast and today highlight */}
-                <div className="w-full h-auto flex gap-3">
+                <div className="w-full h-auto flex gap-3 flex-col md:flex-row">
                   {/* 4 day forecast */}
-                  <div className="w-1/3 h-full bg-base-100 shadow-xl card card-body">
+                  <div className="w-full md:w-1/3 h-full bg-base-100 shadow-xl card card-body">
                     <h1 className=" card-title text-white">4 Days Forecast</h1>
                     {weather?.forecast?.length &&
                       (<div className="flex flex-col gap-2">
@@ -130,7 +130,7 @@ export default function Home() {
                   </div>
                   {/* today highlight */}
                   {
-                    <div className="w-2/3 h-full bg-base-100 shadow-xl card card-body">
+                    <div className="w-full md:w-2/3 h-full bg-base-100 shadow-xl card card-body">
                       <h1 className="card-title text-white">Today highlight
                       </h1>
                       {/* sun */}
@@ -154,11 +154,11 @@ export default function Home() {
                 </div>
               </div>
               {/* left side */}
-              <div className="w-1/3 h-full bg-base-100 card card-body">
+              <div className="w-full lg:w-1/3 h-full bg-base-100 card card-body">
                 <h1 className="card-title text-white">Today at</h1>
                 {
                   weather?.hourlyForecast?.length &&
-                  <div className="w-full grid grid-cols-2 gap-2">
+                  <div className="w-full grid lg:grid-cols-2 md:grid-cols-4 grid-cols-2 gap-2">
                     {weather.hourlyForecast.map((forecast, index) => (
                       <div key={index} className="w-full card">
                         <HourlyForecast time={forecast.dt} icon={forecast.weather[0].icon} temp={forecast.main.temp} />
