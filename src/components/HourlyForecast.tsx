@@ -21,7 +21,7 @@ export default function Humidity({
                 <div>
                 <Image src={`/weather_icons/${icon}.png`}width={40} height={20} alt={"temp_icon"} />
                 </div>
-                <p className="text-xl">
+                <p className="text-xs">
                    {temp}°C
                 </p>
             </CardContent>

@@ -158,7 +158,7 @@ export default function Home() {
                 <h1 className="card-title text-white">Today at</h1>
                 {
                   weather?.hourlyForecast?.length &&
-                  <div className="w-full grid lg:grid-cols-2 md:grid-cols-4 grid-cols-2 gap-2">
+                  <div className="w-full grid lg:grid-cols-2 md:grid-cols-4 grid-cols-2 gap-2 text-xs">
                     {weather.hourlyForecast.map((forecast, index) => (
                       <div key={index} className="w-full card">
                         <HourlyForecast time={forecast.dt} icon={forecast.weather[0].icon} temp={forecast.main.temp} />
@@ -180,90 +180,3 @@ export default function Home() {
     </div>
   )
 }
-
-
-
-
-// 'use client'
-// import { useState } from 'react';
-// import { getWeatherByCity } from '@/lib/weather';
-// import ModeToggle from '@/components/ModeToggle';
-
-
-
-// export default function Home() {
-//  
-
-//   return (
-//     <div className="p-8">
-//       <h1 className="text-2xl font-bold mb-4">Weather App</h1>
-//       <ModeToggle />
-//       <div className="flex items-center gap-4">
-//         <input
-//           type="text"
-//           value={city}
-//           onChange={(e) => setCity(e.target.value)}
-//           placeholder="Enter city name"
-//           className="border rounded-lg px-4 py-2"
-//         />
-//         <button
-//           
-//           className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-//         >
-//           Search
-//         </button>
-//         <button
-//          
-//           className="bg-green-500 text-white px-4 py-2 rounded-lg"
-//         >
-//           Use Current Location
-//         </button>
-//       </div>
-
-//       {weather && (
-//         <div className="mt-4">
-//           <h2 className="text-xl font-semibold">Weather in {weather.name}</h2>
-//           <p>Temperature: {weather.main.temp}°C</p>
-//           <p>Condition: {weather.weather[0].description}</p>
-//           <p>Feels like: {weather.main.feels_like}°C</p>
-//           <p>Wind speed: {weather.wind.speed} m/s</p>
-//           <p>Humidity: {weather.main.humidity}%</p>
-//           <p>Pressure: {weather.main.pressure} hPa</p>
-//           <p>Visibility: {weather.visibility / 1000} km</p>
-//           <p>Sunrise: {new Date(weather.sys.sunrise * 1000).toLocaleTimeString()}</p>
-//           <p>Sunset: {new Date(weather.sys.sunset * 1000).toLocaleTimeString()}</p>
-
-//           {/* Show 5-day forecast */}
-//           <div className="mt-6">
-//             <h3 className="text-lg font-semibold">5-Day Forecast</h3>
-//             <div className="grid grid-cols-2 gap-4 mt-4">
-//               {weather.forecast?.map((forecast, index) => (
-//                 <div key={index} className="border p-4 rounded-md">
-//                   <p>{new Date(forecast.dt * 1000).toLocaleDateString()}</p>
-//                   <p>Temp: {forecast.main.temp}°C</p>
-//                   <p>Condition: {forecast.weather[0].description}</p>
-//                   <p>Feels like: {forecast.main.feels_like}°C</p>
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-
-//           {/* Show hourly forecast */}
-//           <div className="mt-6">
-//             <h3 className="text-lg font-semibold">Hourly Forecast</h3>
-//             <div className="grid grid-cols-2 gap-4 mt-4">
-//               {weather.hourlyForecast?.map((hourly, index) => (
-//                 <div key={index} className="border p-4 rounded-md">
-//                   <p>{new Date(hourly.dt * 1000).toLocaleTimeString()}</p>
-//                   <p>Temp: {hourly.main.temp}°C</p>
-//                   <p>Condition: {hourly.weather[0].description}</p>
-//                   <p>Feels like: {hourly.main.feels_like}°C</p>
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
