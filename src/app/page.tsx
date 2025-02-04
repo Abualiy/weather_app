@@ -177,6 +177,11 @@ export default function Home() {
             )
           ))
       }
+
+      {/* footer */}
+      <div className="text-white font-bold px-4 py-2 rounded">
+        <p>&copy; 2025 G.C By <a className="text-blue-600 underline" href="https://github.com/Abualiy">Akrem Muktar</a> , Powered by <a className="text-blue-600 underline" href="https://openweathermap.org/">openweathermap</a></p>
+      </div>
     </div>
   )
 }
