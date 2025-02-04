@@ -67,4 +67,7 @@ export default {
 		require("tailwindcss-animate"),
 		require('daisyui')
 	],
+	daisyui: {
+		themes: ["dark"]
+	}
 } satisfies Config;
