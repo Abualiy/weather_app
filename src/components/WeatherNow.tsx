@@ -29,7 +29,7 @@ export default function WeatherNow(
 console.log(icon)
 
   return (
-    <Card className="w-full h-full card border-none text-xl bg-base-100 relative font-bold">
+    <Card className="w-full h-full bg-base-100 border-none">
       <CardHeader className="text-white">
         <h2 className="flex absolute right-4 text-3xl">{name} <IoLocationOutline /></h2>
         <CardTitle className="text-3xl ">Now</CardTitle>
@@ -41,7 +41,7 @@ console.log(icon)
           <Image src={`/weather_icons/${icon}.png`} width={100} height={100} alt="weather now"/>
         </CardDescription>
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex justify-between text-white">
         <p>{description}</p>
         <p>{formatDate(date)}</p>
       </CardFooter>

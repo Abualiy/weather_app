@@ -38,11 +38,11 @@ export const useWeatherStore = create<WeatherState>((set) => ({
     set({ loading: true, error: false });
     try {
       const data = await getWeatherByCity(location);
+      if (!data) set({error: true, loading: false})
       set({ weather: data, loading: false });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       set({ error: true, loading: false });
     }
   },
-
 }));

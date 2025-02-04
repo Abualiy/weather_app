@@ -13,16 +13,17 @@ import FeelsLike from "@/components/FeelsLike";
 import HourlyForecast from "@/components/HourlyForecast";
 import { useWeatherStore } from "@/lib/weatherStore";
 import { isDay } from "@/lib/isDay";
+import { LoadingSkeleton } from "@/components/Skeleton";
+import Error from "@/components/Error";
 
 
 
 
 export default function Home() {
-  const [hours, setHours] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [city, setCity] = useState<string>('');
-  const { weather, loading, fetchWeather } = useWeatherStore();
+  const { weather, loading, error, fetchWeather } = useWeatherStore();
 
   useEffect(() => {
     // Fetch current location weather on mount
@@ -51,16 +52,16 @@ export default function Home() {
     }
   };
 
-  if (weather) {
-    console.log('dt', weather.dt)
-    console.log('sunrise', weather.sys.sunrise)
-    console.log('sunset', weather.sys.sunset)
-    console.log('isDay', weather.dt >= weather.sys.sunrise && weather.dt < weather.sys.sunset)
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch()
+    }
   }
+
   return (
     <div className={`w-screen h-screen overflow-y-scroll flex flex-col items-center ${isDay() && 'bg-day-bg'} ${!isDay() && 'bg-night-bg'} bg-cover `}>
       {/* header */}
-      <div className="w-11/12 m-5 flex flex-col gap-2 items-start justify-around md:flex-row  md:item-center">
+      <div className="w-11/12 m-5 flex flex-col gap-2 items-start justify-around md:flex-row  ld:item-center">
         {/* logo */}
         <div className="flex items-center gap-2 text-yellow-100 input input-bordered input-accent">
           <TiWeatherWindyCloudy size={'2rem'} />
@@ -72,8 +73,10 @@ export default function Home() {
           <input
             type="search"
             placeholder="Search for city... "
-            className="input input-bordered input-accent w-full"
-            onChange={handleSearch}
+            className="input input-bordered input-accent w-full text-white font-bold"
+            value={city}
+            onChange={(e) => (setCity(e.target.value))}
+            onKeyDown={handleKeyDown}
           />
         </div>
 
@@ -88,81 +91,92 @@ export default function Home() {
           </button>
         </div>
       </div>
+      {
+        loading ? (
+          <LoadingSkeleton />
+        ) : (
+          weather ? (
+            // {/* main */}
+            <div className="w-3/4 h-screen flex gap-3 mb-8">
+              {/* left side */}
+              <div className="w-2/3 h-full flex flex-col gap-3">
+                {/* now div */}
+                <div className="w-full min-h-60 card text-xl bg-base-100 relative font-bold">
 
-      {/* main */}
-      <div className="w-3/4 h-screen flex gap-3 mb-8">
-        {/* left side */}
-        <div className="w-2/3 h-full flex flex-col gap-3">
-          {/* now div */}
-          <div className="w-full">
-            {
-              weather &&
-                <WeatherNow
-                  name={weather.name}
-                  temp={weather.main.temp}
-                  description={weather.weather[0].description}
-                  date={weather.dt}
-                  icon={weather.weather[0].icon}
-                />
-            }
-          </div>
-          {/* 4 day forecast and today highlight */}
-          <div className="w-full h-auto flex gap-3">
-            {/* 4 day forecast */}
-            <div className="w-1/3 h-full bg-base-100 shadow-xl card card-body">
-              <h1 className=" card-title text-white">4 Days Forecast</h1>
-              {weather?.forecast?.length &&
-                (<div className="flex flex-col gap-2">
-                  {
-                    weather.forecast.map((day, index) => (
-                      <div key={index} className="w-full">
-                        <FourDayForecast temp={day.main.temp} icon={day.weather[0].icon} date={day.dt} />
-                      </div>
-                    ))
-                  }
-                </div>)
-              }
-            </div>
-            {/* today highlight */}
-            {weather &&
-              <div className="w-2/3 h-full bg-base-100 shadow-xl card card-body">
-                <h1 className="card-title text-white">Today highlight
-                </h1>
-                {/* sun */}
-                <Sun sunrise={weather.sys.sunrise} sunset={weather.sys.sunset}/>
-                {/* today info */}
-                <div className="flex justify-between gap-2">
-                  <div className="w-1/4 ">
-                    <Humidity humidity={weather.main.humidity}/>
-                  </div>
-                  <div className="w-1/4 ">
-                    <Pressure pressure={weather.main.pressure}/>
-                  </div>
-                  <div className="w-1/4 ">
-                    <Visibility visibility={weather.visibility}/>
-                  </div>
-                  <div className="w-1/4 ">
-                    <FeelsLike feels_like={weather.main.feels_like}/>
-                  </div>
+                  {<WeatherNow
+                    name={weather.name}
+                    temp={weather.main.temp}
+                    description={weather.weather[0].description}
+                    date={weather.dt}
+                    icon={weather.weather[0].icon}
+                  />}
                 </div>
-              </div>}
-          </div>
-        </div>
-        {/* left side */}
-        <div className="w-1/3 h-full bg-base-100 card card-body">
-          <h1 className="card-title text-white">Today at</h1>
-          {
-            weather?.hourlyForecast?.length && 
-            <div className="w-full grid grid-cols-2 gap-2">
-            {weather.hourlyForecast.map((forecast, index) => (
-              <div key={index} className="w-full card">
-                <HourlyForecast time={forecast.dt} icon={forecast.weather[0].icon} temp={forecast.main.temp}/>
+                {/* 4 day forecast and today highlight */}
+                <div className="w-full h-auto flex gap-3">
+                  {/* 4 day forecast */}
+                  <div className="w-1/3 h-full bg-base-100 shadow-xl card card-body">
+                    <h1 className=" card-title text-white">4 Days Forecast</h1>
+                    {weather?.forecast?.length &&
+                      (<div className="flex flex-col gap-2">
+                        {
+                          weather.forecast.map((day, index) => (
+                            <div key={index} className="w-full">
+                              <FourDayForecast temp={day.main.temp} icon={day.weather[0].icon} date={day.dt} />
+                            </div>
+                          ))
+                        }
+                      </div>)
+                    }
+                  </div>
+                  {/* today highlight */}
+                  {
+                    <div className="w-2/3 h-full bg-base-100 shadow-xl card card-body">
+                      <h1 className="card-title text-white">Today highlight
+                      </h1>
+                      {/* sun */}
+                      <Sun sunrise={weather.sys.sunrise} sunset={weather.sys.sunset} />
+                      {/* today info */}
+                      <div className="flex justify-between gap-2">
+                        <div className="w-1/4 ">
+                          <Humidity humidity={weather.main.humidity} />
+                        </div>
+                        <div className="w-1/4 ">
+                          <Pressure pressure={weather.main.pressure} />
+                        </div>
+                        <div className="w-1/4 ">
+                          <Visibility visibility={weather.visibility} />
+                        </div>
+                        <div className="w-1/4 ">
+                          <FeelsLike feels_like={weather.main.feels_like} />
+                        </div>
+                      </div>
+                    </div>}
+                </div>
               </div>
-            ))}
-          </div>
-          }
-        </div>
-      </div>
+              {/* left side */}
+              <div className="w-1/3 h-full bg-base-100 card card-body">
+                <h1 className="card-title text-white">Today at</h1>
+                {
+                  weather?.hourlyForecast?.length &&
+                  <div className="w-full grid grid-cols-2 gap-2">
+                    {weather.hourlyForecast.map((forecast, index) => (
+                      <div key={index} className="w-full card">
+                        <HourlyForecast time={forecast.dt} icon={forecast.weather[0].icon} temp={forecast.main.temp} />
+                      </div>
+                    ))}
+                  </div>
+                }
+              </div>
+            </div>
+          ) : (
+            error ? (
+              <Error />
+            ) : (
+              <LoadingSkeleton />
+
+            )
+          ))
+      }
     </div>
   )
 }
